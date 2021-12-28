@@ -6,7 +6,7 @@ from .models import *
 
 
 class VitexUpdateView(viewsets.ModelViewSet):
-    """Endpoint to get VitexUpdate data"""
+    """Endpoint to get Vitex Exchange trading data for EPIC-001_BTC-000 pair"""
     serializer_class = VitexUpdateSerializer
     pagination_class = VitexPagination
 
@@ -16,7 +16,7 @@ class VitexUpdateView(viewsets.ModelViewSet):
 
 
 class VitexHoldersUpdateView(viewsets.ModelViewSet):
-    """Endpoint to get VitexHoldersUpdate data"""
+    """Endpoint to get Vitex Holders data from ViteScan.io API"""
     serializer_class = VitexHoldersUpdateSerializer
 
     def get_queryset(self):
