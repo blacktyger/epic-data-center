@@ -1,8 +1,7 @@
 from django.contrib import admin
-from django.urls import path
-
 from rest_framework import routers
 from django.urls import path, include
+
 from explorer_feed import views as ex_view
 from vitex_feed import views as vi_view
 
