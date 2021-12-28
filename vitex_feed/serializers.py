@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import *
 
-class VitexUpdateSerializer(serializers.ModelSerializer):
+class VitexHoldersUpdateSerializer(serializers.ModelSerializer):
     class Meta:
-        model = VitexUpdate
+        model = VitexHoldersUpdate
         fields = ('__all__')

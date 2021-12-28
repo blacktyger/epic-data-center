@@ -1,5 +1,5 @@
 """
-ViteScan.io Scrape, mostly used to get all EPIC-002 holders stats
+ViteScan.io Scrape to get EPIC-002 holders stats
 """
 
 import json
@@ -8,9 +8,9 @@ import time
 import requests
 
 from settings import Database
-from vitescan_io_scrape import ViteScanScrape
+from vitescan_io_holders_scrape import ViteScanHoldersScrape
 
-SCRAPES = [ViteScanScrape]
+SCRAPES = [ViteScanHoldersScrape]
 DATABASE = Database
 INTERVAL = 2*60
 

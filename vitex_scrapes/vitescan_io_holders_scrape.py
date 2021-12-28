@@ -1,5 +1,3 @@
-import time
-
 import requests
 import json
 
@@ -7,7 +5,7 @@ import pandas as pd
 
 BASE_URL = "https://vitescan.io/"
 
-class ViteScanScrape:
+class ViteScanHoldersScrape:
     HOLDERS_URL = "vs-api/token?tokenId=tti_f370fadb275bc2a1a839c753&tabFlag=holders"
 
     def holders_updater(self):
