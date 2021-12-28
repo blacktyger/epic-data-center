@@ -5,6 +5,9 @@ class VitexHoldersUpdate(models.Model):
     holders_count = models.IntegerField()
     holders_stats = models.JSONField(default=dict)
 
+    class Meta:
+        ordering = ('-timestamp', )
+
     def __repr__(self):
         return f"VitexHolders [{self.timestamp}]"
 
