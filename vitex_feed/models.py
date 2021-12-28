@@ -1,9 +1,10 @@
 from django.db import models
 
-class VitexUpdate(models.Model):
-    btc_price = models.CharField(max_length=128)
-    usd_price = models.CharField(max_length=128)
+class VitexHoldersUpdate(models.Model):
+    timestamp = models.DateTimeField(auto_now=True)
     holders_count = models.IntegerField()
-    holders_stats = models.JSONField(default={})
+    holders_stats = models.JSONField(default=dict)
 
+    def __repr__(self):
+        return f"VitexHolders [{self.timestamp}]"
 

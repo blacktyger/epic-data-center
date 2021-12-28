@@ -15,6 +15,7 @@ response = {
     'reward': 
     'supply': 
     'avg_time': 
+    'datetime':
     'timestamp': 
     'total_diffs': 
     'target_diffs': 

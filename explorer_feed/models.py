@@ -1,4 +1,5 @@
 from django.db import models
+from unixtimestampfield.fields import UnixTimeStampField
 
 
 class Block(models.Model):
@@ -16,7 +17,8 @@ class Block(models.Model):
     reward = models.DecimalField(max_digits=32, decimal_places=8)
     supply = models.IntegerField()
     avg_time = models.IntegerField()
-    timestamp = models.IntegerField()
+    datetime = UnixTimeStampField()
+    timestamp = UnixTimeStampField(use_numeric=True)
 
     total_diffs = models.JSONField(default=dict)
     target_diffs = models.JSONField(default=dict)

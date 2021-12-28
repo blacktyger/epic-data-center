@@ -63,6 +63,7 @@ class EpicTechScrape(ExplorerScrape):
                     'reward': block_details['BlockReward'],
                     'supply': last_block['coin_existence'],
                     'avg_time': avg_block_time,
+                    'datetime': timestamp,
                     'timestamp': timestamp,
                     'total_diffs': total_diffs,
                     'target_diffs': target_diffs,

@@ -22,16 +22,12 @@ def main():
             try:
                 scrape().holders_updater()
 
-                holders = {
-                    'summary': scrape().get_holders_summary(),
-                    'stats': scrape().get_holders_stats()
-                    }
+                summary = scrape().get_holders_summary()
+                stats = scrape().get_holders_stats()
 
                 response = {
-                    'btc_price': 0,
-                    'usd_price': 0,
-                    'holders_count': holders['summary']['total'],
-                    'holders_stats': holders['stats']
+                    'holders_count': summary['total'],
+                    'holders_stats': stats
                     }
 
                 url = f"{DATABASE.API_URL}{DATABASE.API_GET_VITEX}"
@@ -41,6 +37,8 @@ def main():
                     print(f'DB RESPONSE [{response.status_code}] - Added new VitexUpdate')
                 else:
                     print(response.text)
+
+                print(f'Waiting [{INTERVAL} seconds]')
 
             except Exception as e:
                 print(e)
