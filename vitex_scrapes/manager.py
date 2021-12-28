@@ -7,8 +7,8 @@ import time
 
 import requests
 
-from epic_data_center.explorer_scrapes.settings import Database
-from epic_data_center.vitex_scrapes.vitescan_io_scrape import ViteScanScrape
+from settings import Database
+from vitescan_io_scrape import ViteScanScrape
 
 SCRAPES = [ViteScanScrape]
 DATABASE = Database
@@ -37,8 +37,11 @@ def main():
                 url = f"{DATABASE.API_URL}{DATABASE.API_GET_VITEX}"
                 response = requests.post(url=url, data=json.dumps(response), headers={'Content-Type': 'application/json'})
 
-                if response.status_code == 200 or 201:
+                if response.status_code in [200, 201]:
                     print(f'DB RESPONSE [{response.status_code}] - Added new VitexUpdate')
+                else:
+                    print(response.text)
+
             except Exception as e:
                 print(e)
                 continue
