@@ -1,5 +1,6 @@
 from rest_framework import viewsets
 
+from .paginations import VitexPagination
 from .serializers import *
 from .models import *
 
@@ -7,6 +8,7 @@ from .models import *
 class VitexUpdateView(viewsets.ModelViewSet):
     """Endpoint to get VitexUpdate data"""
     serializer_class = VitexUpdateSerializer
+    pagination_class = VitexPagination
 
     def get_queryset(self):
         queryset = VitexUpdate.objects.all()
