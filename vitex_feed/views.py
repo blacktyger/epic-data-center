@@ -5,7 +5,7 @@ from .serializers import *
 from .models import *
 
 
-class UpdateView(APIView):
+class UpdateView(viewsets.ModelViewSet):
     """Endpoint to get the latest Vitex Exchange trading data for EPIC-001_BTC-000 pair"""
 
     queryset = Update.objects.all()
