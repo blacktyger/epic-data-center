@@ -1,6 +1,4 @@
 from rest_framework import viewsets
-
-from .paginations import VitexPagination
 from .serializers import *
 from .models import *
 
