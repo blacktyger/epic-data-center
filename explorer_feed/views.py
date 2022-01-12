@@ -7,6 +7,7 @@ from .models import Block
 class BlockView(viewsets.ModelViewSet):
     """Endpoint to get Epic-Cash blockchain blocks data"""
     serializer_class = BlockSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly, )
 
     def get_queryset(self):
         queryset = Block.objects.all()
