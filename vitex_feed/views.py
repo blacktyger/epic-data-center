@@ -10,6 +10,7 @@ class UpdateView(viewsets.ModelViewSet):
 
     queryset = Update.objects.all()
     serializer_class = UpdateSerializer
+    permission_classes = (IsAuthenticated, )
 
     def post(self, request, *args, **kwargs):
         print(request, *args, **kwargs)
