@@ -8,7 +8,7 @@ class UpdateSerializer(serializers.ModelSerializer):
         fields = ('__all__')
 
     def create(self, validated_data):
-        update = Question.objects.last()
+        update = Update.objects.last()
         update.update(**validated_data)
         return update
 
