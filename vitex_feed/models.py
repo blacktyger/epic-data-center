@@ -11,7 +11,7 @@ class Update(models.Model):
     asks = models.JSONField(default=dict)
     candles = models.JSONField(default=dict)
     tickers = models.JSONField(default=dict)
-    timestamp = models.DateTimeField(auto_now=True)
+    timestamp = models.DateTimeField(default=datetime.now)
 
     class Meta:
         ordering = ('-timestamp', )
@@ -25,7 +25,7 @@ class History(models.Model):
     price = models.JSONField(default=dict)
     volume = models.JSONField(default=dict)
     trades = models.JSONField(default=dict)
-    timestamp = models.DateTimeField(auto_now=True)
+    timestamp = models.DateTimeField(default=datetime.now)
 
     class Meta:
         ordering = ('-timestamp', )
@@ -36,7 +36,7 @@ class History(models.Model):
 
 class Holders(models.Model):
     """Storing latest Vitex Holders data updated every X time"""
-    timestamp = models.DateTimeField(auto_now=True)
+    timestamp = models.DateTimeField(default=datetime.now)
     holders_count = models.IntegerField()
     holders_stats = models.JSONField(default=dict)
 
