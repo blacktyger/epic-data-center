@@ -5,10 +5,16 @@ from .serializers import *
 from .models import *
 
 
-class VitexUpdateView(viewsets.ModelViewSet):
+class VitexUpdateView(viewsets.ViewSet):
     """Endpoint to get Vitex Exchange trading data for EPIC-001_BTC-000 pair"""
     serializer_class = VitexUpdateSerializer
-    pagination_class = VitexPagination
+
+    def create(self, request):
+        post_data = request.data
+        print(post_data)
+
+        update, created = VitexUpdate.objects.get_or_create(id=1)
+        print(update, created)
 
     def get_queryset(self):
         queryset = VitexUpdate.objects.all()
