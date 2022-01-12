@@ -8,10 +8,8 @@ class UpdateSerializer(serializers.ModelSerializer):
         fields = ('__all__')
 
     def create(self, validated_data):
-        update = Update.objects.get_or_create(id=1)
-        new = Update(**validated_data)
-        update = new
-        update.save()
+        update, created = Update.objects.get_or_create(id=1)
+        update = Update.objects.filter(id=1).update(**validated_data)
         return update
 
 class HistorySerializer(serializers.ModelSerializer):
