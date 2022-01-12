@@ -1,4 +1,4 @@
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.views import APIView
 from rest_framework import viewsets
 
@@ -11,7 +11,7 @@ class UpdateView(viewsets.ModelViewSet):
 
     queryset = Update.objects.all()
     serializer_class = UpdateSerializer
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticatedOrReadOnly, )
 
     def post(self, request, *args, **kwargs):
         print(request, *args, **kwargs)
