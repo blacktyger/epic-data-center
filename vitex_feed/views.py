@@ -1,24 +1,22 @@
 from rest_framework import viewsets
 
-from .paginations import VitexPagination
 from .serializers import *
 from .models import *
 
 
-class VitexUpdateView(viewsets.ModelViewSet):
-    """Endpoint to get Vitex Exchange trading data for EPIC-001_BTC-000 pair"""
-    serializer_class = VitexUpdateSerializer
-    pagination_class = VitexPagination
-
-    def get_queryset(self):
-        queryset = VitexUpdate.objects.all()
-        return queryset
+class UpdateView(viewsets.ModelViewSet):
+    """Endpoint to get the latest Vitex Exchange trading data for EPIC-001_BTC-000 pair"""
+    serializer_class = UpdateSerializer
+    queryset = VitexUpdate.objects.all()
 
 
-class VitexHoldersUpdateView(viewsets.ModelViewSet):
+class HistoryView(viewsets.ModelViewSet):
+    """Endpoint to get historical Vitex Exchange trading data for EPIC-001_BTC-000 pair"""
+    serializer_class = HistorySerializer
+    queryset = HistoryUpdate.objects.all()
+
+
+class HoldersView(viewsets.ModelViewSet):
     """Endpoint to get Vitex Holders data from ViteScan.io API"""
-    serializer_class = VitexHoldersUpdateSerializer
-
-    def get_queryset(self):
-        queryset = VitexHoldersUpdate.objects.all()
-        return queryset
+    serializer_class = HoldersSerializer
+    queryset = Holders.objects.all()
