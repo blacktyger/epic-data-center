@@ -1,12 +1,10 @@
-from rest_framework import viewsets
-from rest_framework import generics
-from rest_framework import mixins
+from rest_framework.views import APIView
 
 from .serializers import *
 from .models import *
 
 
-class UpdateView(generics.GenericAPIView):
+class UpdateView(APIView):
     """Endpoint to get the latest Vitex Exchange trading data for EPIC-001_BTC-000 pair"""
 
     queryset = Update.objects.all()
