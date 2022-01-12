@@ -5,6 +5,7 @@ from django.db import models
 
 class Update(models.Model):
     """Storing latest Vitex data updated every X time"""
+    timestamp = models.DateTimeField(default=datetime.now)
     price = models.JSONField(default=dict)
     change = models.JSONField(default=dict)
     volume = models.JSONField(default=dict)
@@ -13,7 +14,6 @@ class Update(models.Model):
     asks = models.JSONField(default=dict)
     candles = models.JSONField(default=dict)
     tickers = models.JSONField(default=dict)
-    timestamp = models.DateTimeField(default=datetime.now)
 
     class Meta:
         ordering = ('-timestamp', )
@@ -24,10 +24,10 @@ class Update(models.Model):
 
 class History(models.Model):
     """Snapshot of Vitex data saved every X time"""
+    timestamp = models.DateTimeField(default=datetime.now)
     price = models.JSONField(default=dict)
     volume = models.JSONField(default=dict)
     trades = models.JSONField(default=dict)
-    timestamp = models.DateTimeField(default=datetime.now)
 
     class Meta:
         ordering = ('-timestamp', )
