@@ -13,7 +13,7 @@ class UpdateView(viewsets.ModelViewSet):
 class HistoryView(viewsets.ModelViewSet):
     """Endpoint to get historical Vitex Exchange trading data for EPIC-001_BTC-000 pair"""
     serializer_class = HistorySerializer
-    queryset = HistoryUpdate.objects.all()
+    queryset = History.objects.all()
 
 
 class HoldersView(viewsets.ModelViewSet):
