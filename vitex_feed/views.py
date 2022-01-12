@@ -21,9 +21,12 @@ class HistoryView(viewsets.ModelViewSet):
     """Endpoint to get historical Vitex Exchange trading data for EPIC-001_BTC-000 pair"""
     serializer_class = HistorySerializer
     queryset = History.objects.all()
+    permission_classes = (IsAuthenticatedOrReadOnly, )
 
 
 class HoldersView(viewsets.ModelViewSet):
     """Endpoint to get Vitex Holders data from ViteScan.io API"""
     serializer_class = HoldersSerializer
     queryset = Holders.objects.all()
+    permission_classes = (IsAuthenticatedOrReadOnly, )
+
