@@ -1,15 +1,16 @@
-from django.contrib import admin
-from rest_framework import routers
 from django.urls import path, include
+from rest_framework import routers
+from django.contrib import admin
 
-from explorer_feed import views as ex_view
-from vitex_feed import views as vi_view
+from explorer_feed import views as explorer_views
+from vitex_feed import views as vitex_views
 
 
 router = routers.DefaultRouter()
-router.register(r'block', ex_view.BlockView, 'block')
-router.register(r'vitex', vi_view.VitexUpdateView, 'vitex')
-router.register(r'vitex_holders', vi_view.VitexHoldersUpdateView, 'vitex_holders')
+router.register(r'vitex/update', vitex_views.UpdateView, 'vitex-update')
+router.register(r'vitex/history', vitex_views.HistoryView, 'vitex-history')
+router.register(r'vitex/holders', vitex_views.HolderseView, 'vitex-holders')
+router.register(r'explorer/blocks', explorer_views.BlockView, 'explorer-blocks')
 
 
 urlpatterns = [
