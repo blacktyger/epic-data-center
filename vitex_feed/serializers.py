@@ -7,6 +7,10 @@ class UpdateSerializer(serializers.ModelSerializer):
         model = Update
         fields = ('__all__')
 
+    def create(self, validated_data):
+        update = Question.objects.last()
+        update.update(**validated_data)
+        return update
 
 class HistorySerializer(serializers.ModelSerializer):
     class Meta:
