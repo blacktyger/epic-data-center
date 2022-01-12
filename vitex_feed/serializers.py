@@ -14,7 +14,7 @@ class UpdateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         update, created = Update.objects.update_or_create(id=1)
         Update.objects.filter(id=1).update(**validated_data)
-        update.timestamp = timezone.now
+        update.timestamp = str(timezone.now())
         update.save()
 
         return update
