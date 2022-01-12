@@ -1,3 +1,4 @@
+from rest_framework.decorators import detail_route
 from rest_framework import viewsets
 from .serializers import *
 from .models import *
@@ -7,6 +8,7 @@ class VitexUpdateView(viewsets.ViewSet):
     """Endpoint to get Vitex Exchange trading data for EPIC-001_BTC-000 pair"""
     serializer_class = VitexUpdateSerializer
 
+    @detail_route(methods=['post', 'get'])
     def create(self, request):
         post_data = request.data
         print(post_data)
