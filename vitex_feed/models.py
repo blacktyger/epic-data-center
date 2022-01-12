@@ -5,7 +5,7 @@ from django.db import models
 
 class Update(models.Model):
     """Storing latest Vitex data updated every X time"""
-    timestamp = models.DateTimeField(default=datetime.now)
+    timestamp = models.DateTimeField(default=datetime.now, editable=True)
     price = models.JSONField(default=dict)
     change = models.JSONField(default=dict)
     volume = models.JSONField(default=dict)
@@ -17,6 +17,9 @@ class Update(models.Model):
 
     class Meta:
         ordering = ('-timestamp', )
+
+    def __str__(self):
+        return f"Update [{str(self.timestamp)}]"
 
     def __repr__(self):
         return f"VitexUpdate [{str(self.timestamp)}]"

@@ -8,8 +8,10 @@ class UpdateSerializer(serializers.ModelSerializer):
         fields = ('__all__')
 
     def create(self, validated_data):
-        update, created = Update.objects.get_or_create(id=1)
-        update = Update.objects.filter(id=1).update(**validated_data)
+        try: update = Update.objects.filter(id=1).update(**validated_data)
+        except Exception: update, created = Update.objects.get_or_create(id=1)
+        update.timestamp = datetime.datetime.utcnow()
+        update.save()
         return update
 
 class HistorySerializer(serializers.ModelSerializer):
