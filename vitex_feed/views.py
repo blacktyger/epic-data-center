@@ -1,12 +1,9 @@
 from rest_framework import viewsets
+from rest_framework import generics
+from rest_framework import mixins
 
 from .serializers import *
 from .models import *
-
-from snippets.models import Snippet
-from snippets.serializers import SnippetSerializer
-from rest_framework import mixins
-from rest_framework import generics
 
 
 class UpdateView(mixins.ListModelMixin,
