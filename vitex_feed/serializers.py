@@ -1,6 +1,8 @@
 import datetime
 
 from rest_framework import serializers
+from django.utils import timezone
+
 from .models import *
 
 
@@ -12,7 +14,7 @@ class UpdateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         update = Update.objects.update_or_create(id=1)
         Update.objects.filter(id=1).update(**validated_data)
-        update.timestamp = datetime.datetime.now
+        update.timestamp = timezone.now
         update.save()
 
         return update
