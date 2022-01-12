@@ -6,16 +6,11 @@ from .serializers import *
 from .models import *
 
 
-class UpdateView(mixins.ListModelMixin,
-                 mixins.CreateModelMixin,
-                 generics.GenericAPIView):
+class UpdateView(generics.GenericAPIView):
     """Endpoint to get the latest Vitex Exchange trading data for EPIC-001_BTC-000 pair"""
 
     queryset = Update.objects.all()
     serializer_class = UpdateSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         print(request, *args, **kwargs)
