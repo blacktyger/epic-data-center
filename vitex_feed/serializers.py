@@ -15,11 +15,9 @@ class UpdateSerializer(serializers.ModelSerializer):
         except Exception:
             update, created = Update.objects.get_or_create(id=1)
             update = Update.objects.filter(id=1).update(**validated_data)
-        try:
             update.timestamp = datetime.datetime.now
             update.save()
-        except Exception as e:
-            print(e)
+
         return update
 
 class HistorySerializer(serializers.ModelSerializer):
