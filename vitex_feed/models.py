@@ -1,11 +1,11 @@
-from datetime import datetime
-
+from django.utils import timezone
 from django.db import models
+import arrow
 
 
 class Update(models.Model):
     """Storing latest Vitex data updated every X time"""
-    timestamp = models.DateTimeField(default=datetime.now, editable=True)
+    timestamp = models.DateTimeField(auto_now=True)
     price = models.JSONField(default=dict)
     change = models.JSONField(default=dict)
     volume = models.JSONField(default=dict)
@@ -15,8 +15,13 @@ class Update(models.Model):
     candles = models.JSONField(default=dict)
     tickers = models.JSONField(default=dict)
 
-    class Meta:
-        ordering = ('-timestamp', )
+    def trades_list_with_datetime(self):
+        new_list = []
+
+        for trade in self.trades['list']:
+            new_list.append([trade[0], trade[1], arrow.get(trade[2]).datetime, trade[3]])
+
+        return new_list
 
     def __str__(self):
         return f"Update [{str(self.timestamp)}]"
@@ -27,7 +32,7 @@ class Update(models.Model):
 
 class History(models.Model):
     """Snapshot of Vitex data saved every X time"""
-    timestamp = models.DateTimeField(default=datetime.now)
+    timestamp = models.DateTimeField(default=timezone.now)
     price = models.JSONField(default=dict)
     volume = models.JSONField(default=dict)
     trades = models.JSONField(default=dict)
@@ -41,7 +46,7 @@ class History(models.Model):
 
 class Holders(models.Model):
     """Storing latest Vitex Holders data updated every X time"""
-    timestamp = models.DateTimeField(default=datetime.now)
+    timestamp = models.DateTimeField(default=timezone.now)
     holders_count = models.IntegerField()
     holders_stats = models.JSONField(default=dict)
 
