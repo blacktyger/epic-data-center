@@ -20,5 +20,4 @@ router.register(r'coingecko/epic_vs', coingecko_views.CoingeckoView, 'coingecko-
 urlpatterns = [
     path('api/', include(router.urls)),
     path('admin/', admin.site.urls),
-    path('vitex/', include("vitex_dashboard.urls"))
     ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
 
-    'vitex_dashboard.apps.VitexDashboardConfig',
     'coingecko_feed.apps.CoingeckoFeedConfig',
     'explorer_feed.apps.ExplorerFeedConfig',
     'vitex_feed.apps.VitexFeedConfig',
