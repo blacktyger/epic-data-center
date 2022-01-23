@@ -14,7 +14,7 @@ router.register(r'vitex/update', vitex_views.UpdateView, 'vitex-update')
 router.register(r'vitex/history', vitex_views.HistoryView, 'vitex-history')
 router.register(r'vitex/holders', vitex_views.HoldersView, 'vitex-holders')
 router.register(r'explorer/blocks', explorer_views.BlockView, 'explorer-blocks')
-router.register(r'coingecko/epic_vs', coingecko_views.CoingeckoView, 'coingecko-epic_vs')
+router.register(r'coingecko', coingecko_views.CoingeckoView, 'coingecko')
 
 
 urlpatterns = [
