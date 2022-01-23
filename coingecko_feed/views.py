@@ -9,4 +9,4 @@ class CoingeckoView(viewsets.ModelViewSet):
     """Endpoint to get the latest Coingecko trading data for EPIC"""
     queryset = Coingecko.objects.all()
     serializer_class = CoingeckoSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly, )
+    # permission_classes = (IsAuthenticatedOrReadOnly, )
