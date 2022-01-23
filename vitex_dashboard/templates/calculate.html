@@ -1,0 +1,391 @@
+{% extends "layouts/base-site.html" %} {% load static %}
+{% block content %}
+<style>
+    .widget {
+        box-shadow: 1px 1px 8px, black !important;
+        background-color: rgb(56, 56, 56, 0.7);
+    }
+
+    .widget:hover {
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 4px 10px 0 rgba(0, 0, 0, 0.19);
+    }
+
+    .rounding {
+        border-radius: 20px;
+    }
+
+    .rounding-right {
+        border-top-right-radius: 20px;
+        border-bottom-right-radius: 20px;
+    }
+
+    .rounding-left {
+        border-top-left-radius: 20px;
+        border-bottom-left-radius: 20px;
+    }
+
+    .amount_input, .amount_input:focus {
+        color: #f2f2f2;
+        font-size: 2.2rem;
+        font-weight: bold;
+    }
+
+    .input-border {
+        border-color: rgba(255, 255, 255, 0.3)!important;
+    }
+
+    .input_frame_left {
+        border: solid 1px;
+        border-width: 1px 0px 1px 1px
+    }
+
+    .input_frame_right {
+        border: solid 1px;
+        border-width: 1px 1px 1px 0px
+    }
+
+    .input_frame {
+        border: solid 1px;
+        border-width: 1px 1px 1px 1px
+    }
+
+    .form-control, .form-group, .form-group:focus, .form-control:focus {
+        border-color:Transparent !important;
+        background-color:rgba(255,255,255,0.0) !important;
+        box-shadow: none !important;
+    }
+
+    *:focus {outline:none !important}
+    .btn {outline:none !important}
+
+    .custom-select {
+        background-color: rgba(255,255,255,0.8) !important;
+        border-color: transparent !important;
+        font-size: 1.4rem;
+        border-radius: 10px;
+    }
+
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+</style>
+
+<body>
+
+    {% include 'includes/header.html' %}
+
+    <div class="container-fluid px-3 mt-5">
+        <div class="row d-flex justify-content-center align-items-center">
+            <div class="col-lg-4 px-5 pt-4 widget rounding" id="main_widget">
+                <span class="" style="font-size: 1.4rem;">
+                    Real time trade simulation</span>
+                <form method="POST" class="mt-4" id="orderbook-form">
+                    <div class="row d-flex justify-content-between mb-4">
+                        <div class="col-lg-5 col-xs-5">
+                            <label class="btn btn-block rounding btn-secondary active">
+                            <input type="radio" name="side" id="ask" value="ask"
+                                   onClick="changeColour('ask')" autocomplete="off" checked> Buy
+                            </label>
+                        </div>
+                        <div class="col-lg-5 col-xs-5">
+                            <label class="btn btn-block rounding btn-secondary">
+                                <input type="radio" name="side" id="bid" value="bid"
+                                       onclick="changeColour('bid')" autocomplete="off"> Sell
+                            </label>
+                        </div>
+                    </div>
+                {% csrf_token %}
+                    <div class="form-group row d-flex justify-content-center align-items-stretch mb-3">
+                        <div class="col-sm-10 col-xs-10 input-border rounding input_frame mt-2 py-3">
+                            Amount
+                            <input type="number" autocomplete="off" step="0.00000001" class="form-control amount_input mt-2 py-4"
+                                   id="quantity" placeholder="0.00">
+                        </div>
+                    </div>
+                    <div class="form-group row d-flex justify-content-center align-items-stretch mt-5">
+                        <div class="col-sm-5 col-xs-5 input_frame_left rounding-left input-border py-3">
+                            <div class="text-center">Exchange</div>
+                            <select id="exchanges" class="custom-select mt-4">
+                              <option id="vitex" value="vitex" selected> ViteX <img src="{{vitex.image}}" width="20px"></option>
+                                <option id="citex" value="citex" >CITEX</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-5 col-xs-5 input_frame_right rounding-right input-border py-3">
+                            <div class="text-center">Currency</div>
+                            <select class="custom-select mt-4"  id="pair">
+                                <option id="usdt" value="usdt">USD(T)</option>
+                                <option id="btc" selected value="btc">Bitcoin </option>
+
+                            </select>
+                        </div>
+                    </div>
+                        <!--                    TOTAL PRICE-->
+                    <div class="row d-flex justify-content-between align-items-center">
+                        <div class="col-sm-6 col-md-6  col-xs-6 cost" id="response_data2">
+                            <span class="h3">Total price: </span>
+                        </div>
+                        <div id="total_price" class="col-sm-5 col-md-5 col-xs-5 amount_input text-right" >
+                            <span class="icon"></span>
+                            <span class="num">0.00</span>
+                        </div>
+                    </div>
+                        <!--                    AVR PRICE-->
+                    <div class="row d-flex justify-content-between align-items-center">
+                        <div class="col-sm-6 col-md-6  col-xs-6 cost" id="response_data">
+                            <span class="h5">Average price per unit: </span>
+                        </div>
+                        <div id="avg_price" style="font-size: 2rem" class="col-sm-5 col-md-5 col-xs-5 amount_input text-right" >
+                            <span class="icon"></span>
+                            <span class="num">0.00</span>
+                            <span class="to_usd"></span>
+                        </div>
+                    </div>
+                        <!--                    NEW PRICE-->
+                    <div class="row d-flex justify-content-between align-items-center">
+                        <div class="col-sm-6 col-md-6  col-xs-6 cost" id="response_data3">
+                            <span class="h5">New price per unit: </span>
+                        </div>
+                        <div id="new_price" style="font-size: 2rem" class="col-sm-5 col-md-5 col-xs-5 amount_input text-right" >
+                            <span class="icon"></span>
+                            <span class="num">0.00</span>
+                        </div>
+                    </div>
+                        <!--                    IMPACT PRICE-->
+                    <div class="row mr-2">
+                        <div id="price_impact" style="font-size: 1.6rem" class="cols-sm-12 col-md-12 col-xs-12 mt-2 font-weight-bold text-right">
+                        </div>
+                    </div>
+                        <!--                    BUTTON -->
+                    <div class="form-group row">
+                        <div class="col-sm-12 text-center">
+                            <button type="submit" class="btn btn-primary rounding w-100 mt-5"> <h4>Submit</h4></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+<!----------------------------------------------------------------------------->
+    <div class="container-fluid px-3 mt-5">
+        <div class="row d-flex justify-content-center align-items-center">
+            <div class="col-lg-4 px-5 pt-5 widget rounding">
+                <span class="" style="font-size: 1.4rem;">Convert amount of Epic-Cash to different currency</span>
+                <form method="POST" class="mt-3" id="calc-form">
+                {% csrf_token %}
+                    <div class="form-group row d-flex justify-content-center align-items-stretch mb-3">
+                        <div class="col-sm-7 col-xs-6 input_frame_left rounding-left input-border py-3">
+                            Amount
+                            <input type="number" autocomplete="off" step="0.00000001" class="form-control amount_input mt-4" id="amount" placeholder="0.00">
+                        </div>
+                        <div class="col-sm-5 col-xs-5 input_frame_right rounding-right input-border py-3">
+                            <div class="text-right">Asset</div>
+                            <select id="token" class="custom-select mt-4">
+                              <option value="epic" selected>Epic-Cash</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row d-flex justify-content-center align-items-stretch mt-5">
+                        <div class="col-sm-7 col-xs-6 input_frame_left rounding-left input-border py-3">
+                            Unit price
+                            <input type="number" autocomplete="off" step="0.00000001" class="form-control amount_input mt-4" id="price" value="{{price_usdt}}">
+                        </div>
+                        <div class="col-sm-5 col-xs-5 input_frame_right rounding-right input-border py-3">
+                            <div class="text-right">Currency</div>
+                            <select class="custom-select mt-4" id="currency">
+                                <option selected value="USD">USD(T)</option>
+                                {% for c, p in currency_data.items %}
+                                    {% if c != "USD" %}
+                                        <option value="{{c}}">{{c}}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row d-flex justify-content-between align-items-center">
+                        <div class="col-sm-auto col-xs-3 cost" id="calcs">
+                            <span class="h4">Price: </span>
+                        </div>
+                        <div class="cols-sm-6 col-xs-8">
+                            <input type="number" placeholder="0.00"  step="0.00000001" class="form-control amount_input text-right" id="cost" name="cost">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-12 text-center">
+                            <button type="submit" class="btn btn-primary rounding w-100 mt-5"> <h4>Submit</h4></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+                crossorigin="anonymous"></script>
+
+<script language="JavaScript">
+
+    function changeColour(value) {
+        var bg = document.getElementById("main_widget");
+        switch(value)
+        {
+            case 'ask':
+                bg.style.border = "solid 3px"
+                bg.style.borderColor = "rgba(157, 237, 123, 0.60)";
+                console.log(document.querySelector('input[name="side"]:checked').value,);
+            break;
+            case 'bid':
+                bg.style.border = "solid 3px"
+                bg.style.borderColor = "rgba(142, 47, 47, 0.60)";
+                console.log(document.querySelector('input[name="side"]:checked').value,);
+            break;
+        }
+    }
+
+    let current_currency = document.getElementById('currency');
+
+    console.log(current_currency.value);
+    $('#price').val({{currency_data.USD}});
+
+    {% for c, p in currency_data.items %}
+        let {{c}} = {{p}};
+    {% endfor %}
+
+    var btc = '<i class="fa fa-bitcoin color-orange ml-1"></i>'
+    var usdt = '<i class="fa fa-dollar text-success ml-1"></i>'
+    var avg_priceIcon = $("#avg_price span.icon");
+    var total_priceIcon = $("#total_price span.icon");
+    var new_priceIcon = $("#new_price span.icon");
+    var selectedExchange = $("#exchanges").val();
+
+    $('#exchanges').change(function (event) {
+        event.preventDefault();
+        var selected = $(this).val();
+
+        if (selected === "citex") {
+            $('#pair').append($('<option>', {
+                value: 'usdt',
+                text: 'USD(T)',
+                id: 'usdt'
+            }))
+        } else if (selected === "vitex"){
+            $('#pair option[value=btc]').prop('selected', true).change();
+            $('#usdt').remove();
+        }
+    });
+
+    $(document).ready(function() {
+        var at_start = $('#pair').val();
+
+        var bg = document.getElementById("main_widget");
+
+        bg.style.border = "solid 3px"
+        bg.style.borderColor = "rgba(157, 237, 123, 0.60)";
+        console.log(document.querySelector('input[name="side"]:checked').value,);
+
+        if (selectedExchange === "vitex") {
+            $('#usdt').remove();
+        };
+
+        if (at_start === "btc") {
+                avg_priceIcon.html(btc);
+                total_priceIcon.html(btc);
+                new_priceIcon.html(btc);
+            } else if (at_start === "usdt"){
+                avg_priceIcon.html(usdt);
+                new_priceIcon.html(usdt);
+                total_priceIcon.html(usdt);
+            };
+
+        $('#pair').change(function (event) {
+            event.preventDefault();
+            var selected = $(this).val();
+
+            if (selected === "btc") {
+                avg_priceIcon.html(btc);
+                total_priceIcon.html(btc);
+                new_priceIcon.html(btc);
+            } else if (selected === "usdt"){
+                avg_priceIcon.html(usdt);
+                new_priceIcon.html(usdt);
+                total_priceIcon.html(usdt);
+            }
+        });
+    });
+
+    $('#currency').on('change', function (e) {
+        e.preventDefault();
+        console.log($(this).val())
+
+        {% for c, p in currency_data.items %}
+            if (current_currency.value === '{{c}}') {
+                $('#price').val({{p}})
+            }
+         {% endfor %}
+    });
+
+    $(document).on('submit', '#orderbook-form',function(e){
+        e.preventDefault();
+        var csrf = $('input[name=csrfmiddlewaretoken]').val()
+        $.ajax({
+            type:'POST',
+            url:'{% url "orderbook" %}',
+            data:{
+                quantity:$('#quantity').val(),
+                exchange:$('#exchanges').val(),
+                pair:$('#pair').val(),
+                side: document.querySelector('input[name="side"]:checked').value,
+                csrfmiddlewaretoken: csrf,
+                action: 'post-orderbook'
+            },
+            success:function(json) {
+                $('#avg_price span.num').text(json.average)
+<!--                $('#avg_price span.to_usd').html('-->
+<!--                    <i class="fa fa-dollar dollar-color"></i>-->
+<!--                    <span class="h5  text-white">' + json.average + '</span>')-->
+                $('#total_price span.num').text(json.total)
+                $('#new_price span.num').text(json.new_price)
+                $('#price_impact').text('Price impact: ' + json.impact.toFixed(2) + '%')
+            },
+            error : function(xhr,errmsg,err) {
+            $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+            }
+        });
+    });
+
+    $(document).on('submit', '#calc-form',function(e){
+        e.preventDefault();
+        var csrf = $('input[name=csrfmiddlewaretoken]').val()
+        $.ajax({
+            type:'POST',
+            url:'{% url "calculation" %}',
+            data:{
+                token:$('#token').val(),
+                currency:$('#currency').val(),
+                amount:$('#amount').val(),
+                price:$('#price').val(),
+                csrfmiddlewaretoken: csrf,
+                action: 'post'
+            },
+            success:function(json) {
+                $('#cost').val(json.cost)
+            },
+            error : function(xhr,errmsg,err) {
+            $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+            }
+        });
+    });
+</script>
+{% endblock content %}

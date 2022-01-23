@@ -1,6 +1,7 @@
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework import viewsets
 
+from .paginations import HistoryPagination
 from .serializers import *
 from .models import *
 
@@ -16,6 +17,7 @@ class HistoryView(viewsets.ModelViewSet):
     """Endpoint to get historical Vitex Exchange trading data for EPIC-002_BTC-000 pair"""
     serializer_class = HistorySerializer
     queryset = History.objects.all()
+    pagination_class = HistoryPagination
     # permission_classes = (IsAuthenticatedOrReadOnly, )
 
 

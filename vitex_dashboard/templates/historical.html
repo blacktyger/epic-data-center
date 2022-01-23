@@ -1,0 +1,128 @@
+manage.py runserver{% extends "layouts/base-site.html" %} {% load calculations %} {% load humanize %} {% load static %}
+
+{% block title %} Historical data {% endblock %}
+
+{% block content %}
+
+
+<style>
+     .price_sell {
+        color: #CB5016;
+    }
+
+    .price_buy {
+        color: #0AA915;
+    }
+
+    .rounding {
+        border-radius: 20px;
+    }
+
+</style>
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+        {{ message }}
+    {% endfor %}
+</ul>
+{% endif %}
+
+<div class="container px-3">
+     <div class="row px-4 mt-0">
+            {% include 'includes/header.html' %}
+     </div>
+
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <div class="row row d-flex justify-content-center align-items-center">
+            <form method="GET" action="" class="h4  w-100">
+                <p>Search in ViteX transaction history</p>
+                <div class="row mt-5">
+                    <div class="col-sm-6">
+                        <label><i class="fa fa-clock-o"></i> Date from</label>
+                    </div>
+                    <div class="col-sm-6">
+                        <label><i class="fa fa-clock-o"></i> Date to</label>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-sm-6">
+                        <input class="form-control" name="date" type="date" value="{{values.date}}">
+                    </div>
+                     <div class="col-sm-6">
+                         <input class="form-control" name="date_to" type="date" value="{{values.date_to}}">
+                     </div>
+                </div>
+
+                <label class="my-2  mt-5"><img class="img mb-1 px-1" src="{% static 'imgs/btn1.png' %}" alt="" height="21">
+                    Amount
+                </label>
+                <input class="form-control" name="amount" type="number" step="0.1" value="{{values.amount}}"
+                        min=0 max="{{amount_range.1}}">
+
+                <label class="mt-5">Minimum trade value <i class="fa fa-dollar price_buy"></i></label>
+                <input type="number" class="form-control text-dark" name="valueInput" min="{{val_range.0}}" max="{{val_range.1}}" value="{{values.min_value}}" oninput="this.form.valueRange.value=this.value" />
+                <input class="mt-2" type="range" name="valueRange" min="{{val_range.0}}" max="{{val_range.1}}" value="{{values.min_value}}" oninput="this.form.valueInput.value=this.value" />
+
+                <button type="submit" class="btn btn-primary rounding w-100 mt-5"> <h4>Submit</h4></button>
+            </form>
+        </div>
+        <div class="row d-flex justify-content-center align-items-center mt-5 mb-3">
+            <section class="widget">
+                <span class="h5"> Filters:</span>
+                {% for k, v in filter_badges.items %}
+                <span class="mr-2">{{ v|safe }}</span>
+                {% endfor %}
+            </section>
+        </div>
+        <div class="row row d-flex justify-content-center align-items-center">
+             <section class="widget">
+                 <p>
+                     <span class="h5"> Displayed: {{values.qs_len}}</span> |
+                     <span class="h5 text-right"> Updated: {{updated|date:'d-m-Y H:i'}}</span>
+                 </p>
+                <table class="table w-100">
+                    <thead>
+                    <tr>
+                        <th class=""><i class="fa fa-clock-o"></i> Date</th>
+                        <th class=""><img class="img mb-1 px-1" src="{% static 'imgs/btn1.png' %}" alt="" height="14"> Amount</th>
+                        <th class=""><i class="fa fa-bitcoin color-orange"></i> Price</th>
+                        <th class=""><i class="fa fa-dollar price_buy"></i> Value</th>
+                        <th class=""> Side</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for q in qs %}
+                        <tr>
+                            <td class="font-weight-bold text-white">{{q.date|date:'d-m-Y H:i'}}</td>
+                            <td class="font-weight-bold price_{{q.side}}">{{q.amount|floatformat:1}}</td>
+                            <td class="font-weight-bold text-white">{{q.price|floatformat:8}} </td>
+                            <td class="font-weight-bold text-white">{{q.value|floatformat:1}}</td>
+                            <td class="font-weight-bold price_{{q.side}}">{{q.side}} </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+             </section>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+    <script src="/static/assets/lib/slimScroll/jquery.slimscroll.min.js"></script>
+    <script src="/static/assets/lib/jquery.sparkline/index.js"></script>
+    <script type='text/javascript' src='//cdn.jsdelivr.net/jquery.marquee/1.3.1/jquery.marquee.min.js'></script>
+
+    <script src="/static/assets/lib/backbone/backbone.js"></script>
+    <script src="/static/assets/lib/backbone.localStorage/build/backbone.localStorage.min.js"></script>
+
+    <script src="/static/assets/lib/d3/d3.min.js"></script>
+    <script src="/static/assets/lib/nvd3/build/nv.d3.min.js"></script>
+
+    <!-- page application js -->
+    <script src="/static/assets/js/index.js"></script>
+    <script src="/static/assets/js/chat.js"></script>
+{% endblock javascripts %}

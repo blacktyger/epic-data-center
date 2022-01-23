@@ -1,0 +1,228 @@
+{% extends "layouts/base-site.html" %} {% load calculations %} {% load humanize %} {% load static %}
+
+{% block title %} Mining calculator {% endblock %}
+
+{% block content %}
+
+
+<style>
+    .price_sell {
+        color: #CB5016;
+    }
+
+    .price_buy {
+        color: #0AA915;
+    }
+
+    .rounding {
+        border-radius: 20px;
+    }
+
+    .top-cards {
+        min-height: 110px;
+    }
+    .charts {
+        max-width: 270px;
+    }
+    .table_head {
+        background-color: rgba(62,62,62,0.5);
+    }
+
+</style>
+<body>
+<div class="container-fluid px-3">
+      <!-- HEADER -->
+    <div class="row px-4 mt-0">
+            {% include 'includes/header.html' %}
+    </div>
+    <div class="row d-flex justify-content-around align-items-top">
+        <!-- CALCULATOR GUI -->
+         <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12">
+             <section class="widget">
+                 <div class="h3 mb-5">
+                    <p>Epic-Cash mining calculator</p>
+                 </div>
+                 <form method="GET">
+                    <div class="form-row">
+                        <div class="col">
+                            <label for="rig_hashrate">Hashrate (H/s)</label>
+                            <input id="rig_hashrate" name="rig_hashrate" type="number"
+                                   class="form-control" placeholder="4000 H/s" value="{{ init.rig_hashrate }}">
+                        </div>
+                        <div class="col-4">
+                            <label for="algo">Algorithm</label>
+                            <select class="form-control" id="algo" name="algo">
+                                <option selected value="{{ init.algo }}">{{ init.algo.capitalize }}</option>
+                                {% for a in algo_list %}
+                                    {% if init.algo != a %}
+                                        <option value="{{ a }}">{{ a.capitalize }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label for="currency">Currency</label>
+                            <select class="form-control" id="currency" name="currency">
+                                <option selected value="{{ init.currency }}">{{ init.currency }}</option>
+                                <option value="USD">USD</option>
+                                {% for c in currency_list %}
+                                    {% if init.currency != c %}
+                                        <option value="{{ c.symbol }}">{{ c.symbol }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row d-flex align-items-baseline mt-4">
+                        <div class="col">
+                            <label for="power_consumption">Power Consumption (Watt)</label>
+                            <input id="power_consumption" type="number" class="form-control"
+                                   placeholder="300W" value="{{ init.power_consumption }}" name="power_consumption">
+                        </div>
+                        <div class="col-4">
+                            <label for="electricity_cost">Electricity cost ({{init.currency}} / kWh)</label>
+                            <input id="electricity_cost" type="number" class="form-control" value="{{ init.electricity_cost }}"
+                                   placeholder="0.15 {{init.currency}}/kWh" step="0.01" name="electricity_cost">
+                        </div>
+                        <div class="col">
+                            <label for="pool_fee">Pool fee (%)</label>
+                            <input id="pool_fee" type="number" class="form-control"
+                                   placeholder="2%" name="pool_fee" value="{{init.pool_fee}}">
+                        </div>
+                    </div>
+                     <div class="text-center">
+                         <button type="submit" class="btn btn-primary rounding w-75 mt-5 mb-5"> <h4>Submit</h4></button>
+                     </div>
+                </form>
+             </section>
+                 <!-- CALCULATOR RESULT -->
+             <div class="px-3 row mt-4 d-flex justify-content-start align-items-center">
+                 {% if result %}
+                 <div class="mb-4" style="font-size: 1.7rem;">
+                     Average time to mine one solo block:
+                     <span class="font-weight-bold">
+                        {{result.solo_block.hours_for_one_block|floatformat:1}} h
+                     </span>
+                     {% if result.solo_block.hours_for_one_block > 25 %}
+                        ({{result.solo_block.days|floatformat:1}} days)
+                     {% endif %}
+
+                 </div>
+
+                 <table class="table rounding w-100 text-white table-hover" style="font-size: 1.5rem;">
+                     <thead class="table_head">
+                         <tr>
+                            <th class=""><i class="fa fa-clock-o"></i></th>
+                            <th class="">Reward</th>
+                            <th class="">Income</th>
+                            <th class="">Cost</th>
+                            <th class="">Profit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in periods %}
+                            <tr>
+                                <td class="text-white">
+                                    {{p.0}}
+                                </td>
+                                <td class="font-weight-bold text-white">
+                                    {{result.rig_reward|multi:p.1|floatformat:2}} EPIC
+                                </td>
+                                <td class="text-white">
+                                    {{result.rig_income.value|multi:p.1|floatformat:2}} {{ init.currency }}
+                                    <br>
+                                    <div class="text-muted h5"> <i class="fa fa-bitcoin color-orange"></i>
+                                        {{result.rig_income.btc_value|multi:p.1|floatformat:8}}
+                                    </div>
+                                </td>
+                                <td class="text-white">
+                                    {{result.rig_cost.value|multi:p.1|floatformat:2}} {{ init.currency }}
+                                <br>
+                                    <div class="text-muted h5"> <i class="fa fa-bitcoin color-orange"></i>
+                                        {{result.rig_cost.btc_value|multi:p.1|floatformat:8}}
+                                    </div>
+                                </td>
+                                <td class="font-weight-bold text-white">
+                                    {{result.rig_profit.value|multi:p.1|floatformat:2}} {{ init.currency }}
+                                    <br>
+                                    <div class="text-muted h5"> <i class="fa fa-bitcoin color-orange"></i>
+                                        {{result.rig_profit.btc_value|multi:p.1|floatformat:8}}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        <tr>
+                            <td colspan="5" class="text-right">
+                                All values are estimated.
+                            </td>
+                        </tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+<!--     RIGHT PANEL   -->
+        <div class="mt-4 col-xl-5 col-lg-5 col-md-12 col-xs-12">
+            <div class="mb-5 row d-flex justify-content-between align-items-top">
+                <div class="col-lg-5 col-md-5 col-sm-12">
+                    <img class="img mb-1 px-1" src="{% static 'imgs/randomxalgo.png' %}">
+                    <div class="charts">
+                        {{small_rx.div|safe}}
+                        {{small_rx.script|safe}}
+                    </div>
+                    <div class="">
+                        <h4><i class="fa fa-cubes mr-2"></i>Network:
+                            <span class="font-weight-bold"> {{last_randomx.network_hashrate.randomx|floatformat:0|intcomma}} H/s</span>
+                        </h4>
+                        <h4><i class="fa fa-support mr-2"></i> Target Diff:
+                            <span class="font-weight-bold">{{last_randomx.target_diff.randomx|floatformat:0|intcomma}}</span>
+                        </h4>
+                    </div>
+                </div>
+                <div class="col-lg-5 col-md-5 col-sm-12">
+                    <img class="img mb-1 px-1" src="{% static 'imgs/progpowalgo.png' %}">
+                    <div class="charts">
+                        {{small_pp.div|safe}}
+                        {{small_pp.script|safe}}
+                    </div>
+                    <div class="">
+                        <h4><i class="fa fa-cubes mr-2"></i>Network:
+                            <span class="font-weight-bold"> {{last_progpow.network_hashrate.progpow|floatformat:0|intcomma}} H/s</span>
+                        </h4>
+                        <h4><i class="fa fa-support mr-2"></i> Target Diff:
+                            <span class="font-weight-bold">{{last_progpow.target_diff.progpow|floatformat:0|intcomma}}</span>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+<!--            <div class="row">-->
+<!--                 <div class="mb-5 row row d-flex justify-content-center align-items-center">-->
+<!--                <a href="https://www.amazon.co.uk/gp/product/B07XGB7S36?ie=UTF8&tag=epicticker-21&camp=1634&linkCode=xm2&creativeASIN=B07XGB7S36"-->
+<!--                   target="_blank">-->
+<!--                    AMD EPYC (2nd Gen) 7742-->
+<!--                </a>-->
+<!--                24h profitability: <i class="fa fa-dollar price_buy"></i> {{example_gear.randomx.epyc7742}}-->
+<!--            </div>-->
+        </div>
+    </div>
+</div>
+<!--          [ZROBIC ARTYKUL JAK LICZYC Z REKLAMA CALCULATORA] UPDATED: {{updated}}-->
+
+{% endblock content %}
+</body>
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+    <script src="/static/assets/lib/slimScroll/jquery.slimscroll.min.js"></script>
+    <script src="/static/assets/lib/jquery.sparkline/index.js"></script>
+    <script type='text/javascript' src='//cdn.jsdelivr.net/jquery.marquee/1.3.1/jquery.marquee.min.js'></script>
+
+    <script src="/static/assets/lib/backbone/backbone.js"></script>
+    <script src="/static/assets/lib/backbone.localStorage/build/backbone.localStorage.min.js"></script>
+
+    <script src="/static/assets/lib/d3/d3.min.js"></script>
+    <script src="/static/assets/lib/nvd3/build/nv.d3.min.js"></script>
+
+    <!-- page application js -->
+    <script src="/static/assets/js/index.js"></script>
+    <script src="/static/assets/js/chat.js"></script>
+{% endblock javascripts %}

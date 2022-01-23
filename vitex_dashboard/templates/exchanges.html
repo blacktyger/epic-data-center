@@ -1,0 +1,478 @@
+{% extends "layouts/base-site.html" %} {% load calculations %} {% load humanize %} {% load static %}
+
+{% block title %} Dashboard {% endblock %}
+
+{% block content %}
+<head>
+    <style>
+
+    .bg-ldark {
+        background-color: rgb(56, 56, 56, 0.7);
+    }
+    .tables-color {
+        color: #96c0ec;
+        font-weight: bold;
+        font-size: 1.5rem;
+    }
+    .dollar-color {
+        color: rgb(159, 223, 159);
+    }
+    .card-title{
+        font-color: white;
+    }
+    .widget {
+        border-radius: 8px;
+<!--        border: solid white;-->
+    }
+
+    .text {
+        font-size: 1.4rem;
+    }
+    .widget:hover {
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 4px 10px 0 rgba(0, 0, 0, 0.19);
+    }
+    .num-md-white {
+        font-weight: bold;
+        font-size: 1.5rem;
+    }
+    .num-xs-white {
+        font-weight: bold;
+        font-size: 1.25rem;
+    }
+    .widget-height-min {
+        min-height: 10px;
+
+    }
+    .widget-height-xs {
+        min-height: 120px;
+
+    }
+    .widget-height-md {
+        min-height: 120px;
+
+    }
+    .widget-height-lg {
+        min-height: 374px;
+    }
+    .row-flex {
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display:         flex;
+        flex-direction: row;
+    }
+    .bg-trans-1 {
+        background-color: rgb(55, 58, 59, 0.0);
+    }
+
+    .price_sell {
+        color: #CB5016;
+    }
+
+    .price_buy {
+        color: #0AA915;
+    }
+
+    /* Let's get this party started */
+    ::-webkit-scrollbar {
+        width: 7px;
+    }
+
+    /* Track */
+    ::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+        background: #292928;
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+    }
+
+    .scrollable_parent_trades {
+        height: 312px !important;
+        overflow-y: scroll;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none;  /* Internet Explorer 10+ */
+        }
+
+    .scrollable_parent_orders {
+        height: 205px !important;
+        overflow-y: scroll;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none;  /* Internet Explorer 10+ */
+        }
+
+    .orderbook_bid_col {
+        margin-bottom: 0px;
+        min-height: 210px;
+    }
+
+    .orderbook_ask_col {
+        margin-bottom: 0px;
+        min-height: 210px;
+    }
+    .orderbook_last_price {
+        margin-bottom: 8px;
+        margin-top: 8px;
+        color: white;
+    }
+
+    .th {
+
+
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row px-4 mt-0">
+            {% include 'includes/header.html' %}
+        </div>
+        <div class="row d-flex justify-content-center">
+            <div class="col-lg-7">
+                <section class="widget">
+                    <p>
+                        <img class="mr-4 mb-4" src="{{vitex_logo}}">
+                        <span class="h1">ViteX</span>
+                        <span class="h4 ml-4">EPIC / BTC 1H CHART</span>
+                    </p>
+                    <div class="row d-flex align-items-center">
+                        <div class="col-sm-12 col-xs-12 col-lg-12">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Last Price</th>
+                                        <th>24 Change</th>
+                                        <th>24h High</th>
+                                        <th>24h Low</th>
+                                        <th>24h Volume</th>
+                                    </tr>
+                                    <tr>
+                                        <th>
+                                            <p class="h4">
+                                                <i class="fa fa-bitcoin color-orange"></i>
+                                                {{vitex.price.btc}}
+                                            </p>
+                                            <p class="h4">
+                                                ~ <i class="fa fa-dollar dollar-color"></i>
+                                                {{vitex.price.usd|floatformat:2}}
+                                            </p>
+                                        </th>
+                                        <th>
+                                             <p class="color-{{vitex_change24|check_color}}">
+                                                 {{vitex_change24h_percent|floatformat:2}}%
+                                                 {{vitex_change24h_percent|check_arrow|safe}}
+                                            </p>
+                                            <p class="color-{{vitex_change24|check_color}}">
+                                                {{vitex_change24h}}
+                                            </p>
+                                        </th>
+                                        <th>
+                                            <p>
+                                                <i class="fa fa-bitcoin color-orange"></i>
+                                                {{vitex.price.24h_high}}
+                                            </p>
+                                            <p>
+                                                ~ <i class="fa fa-dollar dollar-color"></i>
+                                               {{vitex.price.24h_high|multi:prices.btc_vs_usd|floatformat:2}}
+                                            </p>
+                                        </th>
+                                        <th>
+                                            <p>
+                                                <i class="fa fa-bitcoin color-orange"></i>
+                                                {{vitex.price.24h_low}}
+                                            </p>
+                                            <p>
+                                                ~ <i class="fa fa-dollar dollar-color"></i>
+                                               {{vitex.price.24h_low|multi:prices.btc_vs_usd|floatformat:2}}
+                                            </p>
+                                        </th>
+                                        <th>
+                                            <p>
+                                                <img class="img mb-1 px-1" src="{% static 'imgs/btn1.png' %}" alt="" height="17">
+                                                {{vitex.volume.epic|floatformat:0|intcomma}}
+                                            </p>
+                                            <p>
+                                                ~ <i class="fa fa-dollar dollar-color"></i>
+                                                {{vitex.volume.usd|floatformat:0|intcomma}}
+                                            </p>
+                                        </th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="bokeh_chart">
+                        {% for js in vitex_chart %}
+                            {{ js|safe }}
+                        {% endfor %}
+                    </div>
+                </section>
+            </div>
+            <div class="col-lg-3">
+                <div class="row d-flex align-items-center">
+                    <section class="widget w-100">
+                        <div class="row">
+                            <div class="col-sm-6 text-left">
+                                <img class="img mr-2" src="{% static 'imgs/btn1.png' %}" alt="" height="25">
+                                <span class="h4">Last 24h trades</span>
+                            </div>
+                            <div class="col-sm-5 text-right">
+                                <a class="" href="#"><i class="fa fa-table"></i> Trade history </a>
+                            </div>
+                        </div>
+                        <div class="row d-flex justify-content-center">
+                            <table class="table ml-3">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th class="align-middle">
+                                            Quantity
+                                        </th>
+                                        <th class="align-middle">
+                                            Value
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th class="align-middle">
+                                            Bought:
+                                        </th>
+                                        <th class="h5 font-weight-bold h4 price_sell align-middle">
+                                            <span class="h4 price_buy">{{trades_bought|floatformat:0|intcomma}}</span>
+                                        </th>
+                                        <th class="align-middle">
+                                            <i class="fa fa-dollar dollar-color"></i>
+                                            <span class="h5 text-white">{{trades_bought|multi:prices.epic_vs_usd|floatformat:0|intcomma}}</span>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th class="align-middle">
+                                            SOLD:
+                                        </th>
+                                        <th class="align-middle">
+                                            <span class="h4  price_sell">{{trades_sold|floatformat:0|intcomma}}</span>
+                                        </th>
+                                        <th class="align-middle">
+                                            <i class="fa fa-dollar dollar-color"></i>
+                                            <span class="h5  text-white">{{trades_sold|multi:prices.epic_vs_usd|floatformat:0|intcomma}}</span>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                       <th class="align-middle">
+                                            Bull of the day:
+                                            <span class="toggle-info" title="The biggest single buy transaction.">
+                                                <i class="fa fa-info-circle text-info"></i>
+                                            </span>
+                                        </th>
+                                        <th class="align-middle">
+                                            <span class="h4  price_buy">{{best_trades.0|floatformat:0|intcomma}}</span>
+                                        </th>
+                                        <th class="align-middle">
+                                            <i class="fa fa-dollar dollar-color"></i>
+                                            <span class="h5  text-white">{{best_trades.0|multi:prices.epic_vs_usd|floatformat:0|intcomma}}</span>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th class="align-middle">
+                                            Bear of the day:
+                                            <span class="toggle-info" title="The biggest single sell transaction.">
+                                                <i class="fa fa-info-circle text-info"></i>
+                                            </span>
+                                        </th>
+                                        <th class="align-middle">
+                                            <span class="h4  price_sell">{{best_trades.1|floatformat:0|intcomma}}</span>
+                                        </th>
+                                        <th class="align-middle">
+                                            <i class="fa fa-dollar dollar-color"></i>
+                                            <span class="h5  text-white">{{best_trades.1|multi:prices.epic_vs_usd|floatformat:0|intcomma}}</span>
+                                        </th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                        <div class="scrollable_parent_trades">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th class="">Price</th>
+                                    <th class="">Amount</th>
+                                    <th class="">Time</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    {% for trade in trades %}
+                                    <tr>
+                                        <td class=" font-weight-bold {% if trade.3 == 0 %}
+                                        price_buy
+                                        {% else %}
+                                        price_sell {% endif %}">
+                                            {{trade.0}}</td>
+                                        <td class="w-25 text-white">{{trade.1}}</td>
+                                        <td class=" text-white">{{trade.2|timesince}} ago</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+        <div class="row d-flex justify-content-center px-4">
+            <div class="col-lg-3">
+                 <div class="row d-flex justify-content-center">
+                     <section class="widget orderbook_main_col w-100" style="">
+                        <p>
+                            <span class="h4">Orderbook</span>
+                        </p>
+                         <table class="table w-100">
+                             <thead>
+                                 <tr>
+                                    <th>
+                                        <img class="mx-3" src="https://www.flaticon.com/svg/static/icons/svg/616/616515.svg" height="27">
+                                        <span class="h5">WHALES</span>
+                                    </th>
+                                     <th class="align-middle">
+                                        Quantity
+                                    </th>
+                                    <th class="align-middle">
+                                        Value
+                                    </th>
+                                 </tr>
+                                 <tr>
+                                     <th><span class="price_sell">Biggest ASK</span></th>
+                                     <th class="align-center">
+                                         <img class="img mr-2" src="{% static 'imgs/btn1.png' %}" alt="" height="17">
+                                         {{biggest_ask.1|floatformat:0|intcomma}}
+                                     </th>
+                                     <th class=align-center">
+                                         <i class="fa fa-dollar dollar-color"></i>
+                                         {{biggest_ask.2|multi:prices.btc_vs_usd|floatformat:0|intcomma}}
+                                     </th>
+                                 </tr>
+                                 <tr>
+                                     <th class="price_buy"><span class="price_buy">Biggest BID</span></th>
+                                     <th class="align-center">
+                                         <img class="img mr-2" src="{% static 'imgs/btn1.png' %}" alt="" height="17">
+                                         {{biggest_bid.1|floatformat:0|intcomma}}
+                                     </th>
+                                     <th class=align-center">
+                                         <i class="fa fa-dollar dollar-color"></i>
+                                         {{biggest_bid.2|multi:prices.btc_vs_usd|floatformat:0|intcomma}}
+                                     </th>
+                                 </tr>
+                             </thead>
+                         </table>
+                         <section class="widget orderbook_ask_col">
+                             <table class="table">
+                                 <thead>
+                                    <tr>
+                                        <th class=""><i class="fa fa-bitcoin color-orange"></i> Price</th>
+                                        <th class=""><img class="img mb-1 px-1" src="{% static 'imgs/btn1.png' %}" alt="" height="14"> Amount</th>
+                                        <th class=""><i class="fa fa-bitcoin color-orange"></i> Total</th>
+                                    </tr>
+                                 </thead>
+                             </table>
+                             <div class="scrollable_parent_orders" id="table-ask">
+                                <table class="table">
+                                    <tbody>
+                                        {% for ask in vitex_asks %}
+                                        <tr>
+                                            <td class=" font-weight-bold price_sell">{{ask.0}}</td>
+                                            <td class="font-weight-bold text-white">{{ask.1}}</td>
+                                            <td class="font-weight-bold text-white">{{ask.2|floatformat:8}} </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                             </div>
+                         </section>
+                         <div class="row d-flex justify-content-center align-items-center">
+                             <div class="orderbook_last_price text-center">
+                                 <span class="h3 mr-4 font-weight-bold {% if trades.0.3 == 0 %}
+                                        price_buy
+                                        {% else %}
+                                        price_sell {% endif %}">
+                                     <i class="fa fa-bitcoin color-orange"></i> {{trades.0.0}}</span>
+                                     <span class="h4">~ <i class="fa fa-dollar dollar-color"></i> {{trades.0.0|multi:prices.btc_vs_usd|floatformat:2}}</span>
+                             </div>
+                         </div>
+                         <section class="widget orderbook_bid_col">
+                             <div class="scrollable_parent_orders" id="table-bid">
+                                <table class="table">
+                                    <tbody>
+                                        {% for bid in vitex_bids %}
+                                        <tr>
+                                            <td class="font-weight-bold price_buy">{{bid.0}}</td>
+                                            <td class="font-weight-bold text-white">{{bid.1}}</td>
+                                            <td class="font-weight-bold text-white">{{bid.2|floatformat:8}} </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                             </div>
+                         </section>
+                     </section>
+                 </div>
+            </div>
+            <div class="col-lg-7 ml-4">
+                <div class="row d-flex justify-content-center align-items-center">
+                    <section  class="widget w-100">
+                        <p>
+                            <span class="h4"> Volume</span>
+                        </p>
+                        {% for js in vitex_volume %}
+                            {{ js|safe }}
+                        {% endfor %}
+                    </section>
+                </div>
+                <div class="row d-flex justify-content-center align-items-center">
+                    <section class="widget w-100">
+                        <p>
+                            <span class="h4"> Orderbook depth</span>
+                        </p>
+                        {% for js in vitex_depth %}
+                            {{ js|safe }}
+                        {% endfor %}
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+    <script>
+        $(".toggle-info").tooltip({
+            placement: "top"
+        });
+        var elem = document.getElementById('table-ask');
+        elem.scrollTop = elem.scrollHeight;
+    </script>
+
+    <!-- page specific scripts -->
+    <!-- page libs -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bokeh/2.0.1/bokeh.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bokeh/2.0.1/bokeh-widgets.min.js"></script>
+    <script src="/static/assets/lib/slimScroll/jquery.slimscroll.min.js"></script>
+    <script src="/static/assets/lib/jquery.sparkline/index.js"></script>
+    <script type='text/javascript' src='//cdn.jsdelivr.net/jquery.marquee/1.3.1/jquery.marquee.min.js'></script>
+
+    <script src="/static/assets/lib/backbone/backbone.js"></script>
+    <script src="/static/assets/lib/backbone.localStorage/build/backbone.localStorage.min.js"></script>
+
+    <script src="/static/assets/lib/d3/d3.min.js"></script>
+    <script src="/static/assets/lib/nvd3/build/nv.d3.min.js"></script>
+
+    <!-- page application js -->
+    <script src="/static/assets/js/index.js"></script>
+    <script src="/static/assets/js/chat.js"></script>
+{% endblock javascripts %}

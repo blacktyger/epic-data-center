@@ -1,0 +1,183 @@
+{% load calculations %} {% load humanize %} {% load static %}
+
+<head>
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+</head>
+
+<style>
+
+    .img {
+        image-rendering: -moz-crisp-edges;
+}
+
+    .font-links {
+        color: white;
+        text-decoration: none;
+        font-family: "Arial Black", Gadget, sans-serif;
+        font-weight: bolder;
+    }
+
+    .font-sm {
+        font-size: 1.4rem;
+    }
+
+    .font-lg {
+        font-size: 1.9rem;
+    }
+
+    .epic-yellow {
+        color: #c09c31;
+    }
+
+    .nav-bg {
+        height: 100px;
+        background: rgb(31,31,32);
+        background: linear-gradient(180deg, rgba(31,31,32,1) 0%, rgba(46,46,48,1) 100%);
+
+        position:fixed;
+        top:0;
+        left:0;
+        right:0;
+        z-index:100;
+    }
+
+    .nav-logo-lg {
+        height: 100px;
+        padding-left: 70px;
+    }
+
+    .nav-logo-sm {
+        height: 100px;
+    }
+
+    .nav-links-lg {
+        background-image: url({% static 'imgs/header_bg.png' %});
+        height: 38px;
+        position:fixed;
+        top:100px;
+        left:0;
+        right:0;
+        z-index:100;
+        box-shadow: 1px 1px 5px black;
+    }
+
+    .nav-prices-sm {
+        background-image: url({% static 'imgs/header_bg.png' %});
+        height: 60px;
+        box-shadow: 1px 1px 5px black;
+    }
+
+    .nav-links-sm {
+        background-image: url({% static 'imgs/header_bg.png' %});
+        height: 100px;
+        position:fixed;
+        top:100px;
+        left:0;
+        right:0;
+        z-index:100;
+        box-shadow: 1px 1px 5px black;
+    }
+
+</style>
+<!-- BIG SCREENS -->
+<div class="row d-flex align-items-center nav-bg  hidden-xs hidden-sm">
+    <div class="col-lg-4">
+        <a href="#" ><img class="img nav-logo-lg" src="{% static 'imgs/radar_logo_100px.png' %}"></a>
+    </div>
+    <div class="col-lg-8 hidden-sm hidden-xs">
+        <div class="row float-right mr-5">
+            <span class="label bg-ldark pt-2 mx-2 mb-1" style="border-radius: 25px;">
+                <img class="img mb-2 py-1" src="{% static 'imgs/epic_circle.png' %}" height="28">
+                <span class="num-md-white">
+                    <i class="fa fa-dollar dollar-color"></i>
+                    {{filters.epic.gecko.data.price|floatformat:-3|intcomma}}
+                    {{filters.epic.gecko.data.change_24h|check_arrow|safe}}
+                </span>
+            </span>
+            {% for coin in other_coins %}
+            <span class="label bg-ldark pt-2 mx-2 mb-1" style="border-radius: 25px;">
+                <img class="img mb-2 py-1" src="{{coin.coingecko.last.data.img}}" height="28">
+                <span class="num-md-white">
+                    <i class="fa fa-dollar dollar-color"></i>
+                    {{coin.coingecko.last.data.price|floatformat:-1|intcomma}}
+                    {{coin.coingecko.last.data.change_24h|check_arrow|safe}}
+                </span>
+            </span>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="row d-flex align-items-center justify-content-start side-nav nav-links-lg hidden-xs hidden-sm">
+    <div class="d-flex align-items-center">
+        <div style="width: 60px;"></div>
+    </div>
+</div>
+
+<!-- SMALL SCREENS -->
+
+<div class="row d-flex align-items-center nav-bg  hidden-md hidden-lg hidden-xl">
+    <div class="col-lg-12 text-center">
+        <a href="#" ><img class="img nav-logo-sm" src="{% static 'imgs/radar_logo.png' %}"></a>
+    </div>
+</div>
+
+<div class="row d-flex justify-content-center align-items-center side-nav nav-links-sm hidden-md hidden-lg hidden-xl">
+    <div class="row float-center mx-1">
+        {% for coin in other_coins %}
+            {% if coin.symbol == "BTC" or "XMR" %}
+            <span class="pt-2 mx-2 mb-1 num-md-white" style="border-radius: 25px;">
+                <img class="img mb-2 py-1" src="{{coin.coingecko.last.data.img}}" height="23">
+                    <i class="fa fa-dollar dollar-color"></i>
+                    {{coin.coingecko.last.data.price|floatformat:-1|intcomma}}
+                    {{coin.coingecko.last.data.change_24h|check_arrow|safe}}
+            </span>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <div class="row float-center px-1">
+        <div class="dropdown">
+              <button class="btn font-sm mb-2 dropdown-toggle" type="button" id="socialBtn"
+                      data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+<!--                  <img class="img" height="11px" src="{% static 'imgs/socialmedia.png' %}">-->
+                  <span class="font-links epic-yellow">SOCIAL</span><span class="font-links">MEDIA</span>
+              </button>
+              <div class="dropdown-menu" aria-labelledby="socialBtn">
+                  {% for link in links %}
+                    {% if link.category == 'social' %}
+                        <a class="dropdown-item" href="{{link.link}}" target="_blank"><i class="{{link.icon}}"></i> {{link.name}}</a>
+                    {% endif %}
+                  {% endfor %}
+              </div>
+        </div>
+        <div class="dropdown">
+            <button class="btn font-sm mb-2 dropdown-toggle" type="button" id="techBtn"
+                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+<!--              <img class="img" height="11px" src="{% static 'imgs/epic.png' %}">-->
+                <span class="font-links epic-yellow">EPIC</span><span class="font-links">CASH</span>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="socialBtn">
+              {% for link in links %}
+                {% if link.category == 'tech' %}
+                    <a class="dropdown-item" href="{{link.link}}" target="_blank"><i class="{{link.icon}}"></i> {{link.name}}</a>
+                {% endif %}
+              {% endfor %}
+            </div>
+        </div>
+        <div class="dropdown">
+            <button class="btn font-sm mb-2 dropdown-toggle" type="button" id="friendsBtn"
+                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+<!--              <img class="img" height="11px" src="{% static 'imgs/friends.png' %}">-->
+                <span class="font-links epic-yellow">EPIC</span><span class="font-links">FRIENDS</span>
+            </button>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+

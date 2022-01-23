@@ -1,0 +1,103 @@
+{% extends "layouts/base-site.html" %} {% load calculations %} {% load humanize %} {% load static %}
+
+
+{% block title %} Dashboard {% endblock %}
+
+
+
+{% block content %}
+        {% include 'includes/header.html' %}
+<div class="col-lg-9 mt-5">
+    <!-- MimbleWimble COINS STATS-->
+    <section class="widget">
+        <header>
+            <h4>
+                MimbleWimble
+                <small>
+                    coins statistics
+                </small>
+            </h4>
+            <div class="widget-controls">
+                <a data-widgster="close" title="Close" href="#"><i class="glyphicon glyphicon-remove"></i></a>
+            </div>
+        </header>
+        <div class="widget-table-overflow">
+            <table id="mwcoins" class="table table-striped table-lg mt-sm mb-0 sources-table h5 ">
+                <thead>
+                <tr>
+                    <th>Coin</th>
+                    <th>Price</th>
+                    <th>Price Change 7d</th>
+                    <th class="chart-col-header hidden-xs">Trend</th>
+                    <th class="hidden-xs">Market Cap</th>
+                    <th>Volume 24h</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for k, v in mw_data.items %}
+                    {% if v.symbol == 'EPIC' %}
+                        <tr style="border-style: solid; border-width: 1px; border-color: gold; background-color: rgba(51, 51, 51, 0.3)">
+                    {% else %}
+                        <tr style="">
+                    {% endif %}
+                            <td>
+                                <img src="{{ v.img }}" class="rounded px-2" height="30px">
+                                <span class="label label-important">{{v.symbol.upper}}</span> {{v.name}}</td>
+                            <td><strong>${{v.price|floatformat:-3}}</strong></td>
+                            <td><strong>{{v.change_7d|floatformat:-1}} %</strong></td>
+                            <td class="chart-cell hidden-xs">
+                                {{ v.chart.script|safe }}
+                                {{ v.chart.div|safe }}
+                            </td>
+                            <td class="hidden-xs">${{v.market_cap|intcomma}}</td>
+                            <td>${{v.volume|intcomma}}</td>
+                        </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+    <!-- page specific scripts -->
+    <!-- page libs -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bokeh/2.0.1/bokeh.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bokeh/2.0.1/bokeh-widgets.min.js"></script>
+    <script src="/static/assets/lib/slimScroll/jquery.slimscroll.min.js"></script>
+    <script src="/static/assets/lib/jquery.sparkline/index.js"></script>
+
+    <script src="/static/assets/lib/backbone/backbone.js"></script>
+    <script src="/static/assets/lib/backbone.localStorage/build/backbone.localStorage.min.js"></script>
+
+    <script src="/static/assets/lib/d3/d3.min.js"></script>
+    <script src="/static/assets/lib/nvd3/build/nv.d3.min.js"></script>
+
+    <!-- page application js -->
+    <script src="/static/assets/js/index.js"></script>
+    <script src="/static/assets/js/chat.js"></script>
+
+    <!-- page template -->
+    <script type="text/template" id="message-template">
+        <div class="sender pull-left">
+            <div class="icon">
+                <img src="/static/assets/img/2.png" class="img-circle" alt="">
+            </div>
+            <div class="time">
+                just now
+            </div>
+        </div>
+        <div class="chat-message-body">
+            <span class="arrow"></span>
+            <div class="sender"><a href="#">Tikhon Laninga</a></div>
+            <div class="text">
+                <%- text %>
+            </div>
+        </div>
+    </script>
+
+{% endblock javascripts %}

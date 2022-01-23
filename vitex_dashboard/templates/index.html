@@ -1,0 +1,16 @@
+{% load static %}
+<head>
+    <style>
+    </style>
+
+    <script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/fusioncharts.js"></script>
+    <script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/themes/fusioncharts.theme.fusion.js"></script>
+    <script type="text/javascript" src="{% static 'fusioncharts.js' %}"></script>
+    <script type="text/javascript" src="{% static 'fusioncharts.charts.js' %}"></script>
+    <script type="text/javascript" src="{% static 'themes/fusioncharts.theme.fusion.js' %}"></script>
+
+</head>
+<body>
+<div id="myFirstwidget-container">{{ output|safe }}</div>
+
+</body>

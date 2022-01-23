@@ -1,0 +1,188 @@
+{% extends "layouts/base-site.html" %} {% load static %}
+{% block content %}
+
+<head>
+    <title>{% block title %}About `blacktyger{% endblock %}</title>
+</head>
+
+<style>
+
+.custom-border {
+    border: none;
+    border-color: black;
+    border-radius: 10px;
+    box-shadow: 0px 0px 2px white;
+
+}
+
+.proj-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.card-img-top {
+    border: none;
+    border-radius: 10px;
+<!--    box-shadow: 1px 1px 8px #1f1f20;-->
+}
+
+.card-block {
+    background-color: transparent;
+    font-size: 1em;
+    position: relative;
+    margin: 0;
+    padding: 1em;
+    border: none;
+    border-top: 1px solid rgba(34, 36, 38, .1);
+    box-shadow: none;
+    }
+
+.card-img-top {
+    width:100%;
+}
+.text-card {
+    font-family: Arial, Helvetica, sans-serif;
+
+}
+}
+.card {
+    background-color: rgba(34, 36, 38, .3);
+    font-size: 1em;
+    overflow: hidden;
+    padding: 5;
+    border: none;
+    border-radius: .28571429rem;
+    box-shadow: 0 1px 3px 0 #d4d4d5, 0 0 0 1px #d4d4d5;
+    margin-top:20px;
+}
+
+.btn {
+  margin-top: auto;
+}
+</style>
+
+{% include 'includes/header.html' %}
+
+<div class="container-fluid d-flex justify-content-between py-3">
+    <div class="row">
+        <div class="col-lg-7 col-md-11 col-sm-11 col-xs-11 mx-3">
+            <div class="proj-title mb-3"> <span class="text-warning"> Epic-Cash </span> Projects </div>
+            {% for project in projects %}
+            <div class="row my- mb-5 py-3 d-flex align-items-center custom-border">
+                <!-- IMG -->
+                <div class="col-lg-4">
+                      <!-- Card image -->
+                        <img class="card-img-top" src="{{project.image.url}}"
+                          alt="Card image cap">
+                        <a href="#!">
+                          <div class="mask rgba-white-slight"></div>
+                        </a>
+                </div>
+                <!-- TEXT -->
+                <div class="col-lg-7">
+                    <h2 class="text-card font-weight-bold"> {{project.title}}
+                        {% if project.status == 'online' %}
+                        <span class="badge badge-success">{{project.status}}</span>
+                        {% else %}
+                        <span class="badge badge-warning">{{project.status}}</span>
+                        {% endif %}
+                    </h2>
+
+                    <h4 class="text-card">
+                        {{project.description_short}}
+                    </h4>
+                    <br>
+                    <h4 class="text-card">
+                        {{project.description|safe}}
+                    </h4>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="col-lg-4 col-md-11 col-sm-11 col-xs-11 w-100">
+            <div class="proj-title mb-3"> <span class="text-warning"> About </span> Me </div>
+            <div class="row px-3 py-3 d-flex justify-content-center  custom-border">
+                <div class="text-center">
+                    <img class="img img-circle w-25" style="box-shadow: 2px 2px 5px black;" src="{% static  'imgs/avatar.jpg'%}">
+                    <h2 class="text-card mb-5 font-weight-bold"> `blacktyger <span class="badge mx-2 badge-success">Active</span> </h2>
+                    <h4 class="text-card">
+                        I'm Patryk - full time husband, father and proud member of Epic-Cash community!
+                        I started my development activity in 2019, getting in to the field with Python as a tool,
+                        and Epic-Cash project as a 'playground'. My goal is to become a full-time developer, and I'm on my way!
+                    </h4>
+                    <br>
+                    <h4 class="text-card mb-3">
+                        Skills and experience:
+                    </h4>
+                    <h4 class="text-card mb-3">
+                        <ul class="list-group px-5 mb-2">
+                            <li class="list-group-item my-1">
+                                <i class="glyphicon glyphicon-star text-success mx-3"></i>
+                                <b>Python</b> - Django, REST, Tkinter, PyQT5 and most common libraries
+                            </li>
+                            <li class="list-group-item my-1">
+                                <i class="glyphicon glyphicon-star text-success mx-3"></i>
+                                <b>Front End</b> - HTML, CSS, JS
+                            </li>
+                            <li class="list-group-item my-1">
+                                <i class="glyphicon glyphicon-star text-success mx-3"></i>
+                                <b>Webdev</b> - Linux, Gunicorn, Nginx, Git
+                            </li>
+                        </ul>
+                    </h4>
+                    <h4 class="text-card mb-1">
+                        Media / Contact:
+                    </h4>
+                    <h4 class="text-card mb-3">
+                        <ul class="list-group mt-1 px-5 ">
+                            <li class="list-group-item my-1">
+                                <i class="fa fa-twitter text-info mx-3"></i>
+                                <b>Twitter</b>  <a href="https://twitter.com/blacktyg3r" target="_blank">
+                                twitter.com/blacktyg3r</a>
+                            </li>
+                            <li class="list-group-item my-1">
+                                <i class="fa fa-github text-info mx-3"></i>
+                                <b>Github</b>  <a href="https://github.com/blacktyger" target="_blank">
+                                github.com/blacktyger/</a>
+                            </li>
+                            <li class="list-group-item my-1">
+                                <i class="fa fa-envelope-square text-info mx-3"></i>
+                                <b>e-mail</b>  <a href="#">
+                                blacktyg3r@gmail.com</a>
+                            </li>
+                        </ul>
+                    </h4>
+                    <h4 class="text-card mb-3">
+                        Donations:
+                    </h4>
+                    <h4 class="text-card mb-3">
+                        <ul class="list-group mt-2 px-5 ">
+                            <li class="list-group-item my-1">
+                                <i class="fa fa-coin text-info mx-3"></i>
+                                <b>EpicFundMe</b> -
+                                 <a href="https://epicfundme.com/109" target="_blank">
+                                 software tools for Epic-Cash community</a>
+                            </li>
+                            <li class="list-group-item my-1">
+                                <i class="fa fa-coin text-info mx-3"></i>
+                                <b>Epic-Cash</b> -
+                                 <a href="#">
+                                 http://epic-ticker.tech:3415</a>
+                            </li>
+
+                            <li class="list-group-item my-1">
+                                <i class="fa fa-coin text-info mx-3"></i>
+                                <b>ERC20</b> -
+                                 <a href="#">
+                                     <span class="h5">0xFA712A2778EF4C1C87FA5fcfef613dB621473f62</span>
+                                 </a>
+                            </li>
+                        </ul>
+                    </h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
