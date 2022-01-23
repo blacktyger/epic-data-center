@@ -1,4 +1,9 @@
 /coingecko_feed/migrations/
 /explorer_feed/migrations/
 /vitex_feed/migrations/
-/vitex_dashboard/migrations/
+/vitex_dashboard/
+/core/migrations/
+/db.sqlite3
+*.pyc
+*~
+*.swpgit rm *.pyc
