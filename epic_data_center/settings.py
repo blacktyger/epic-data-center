@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'coingecko_feed.apps.CoingeckoFeedConfig',
     'explorer_feed.apps.ExplorerFeedConfig',
     'vitex_feed.apps.VitexFeedConfig',
+    'esm_feed.apps.EsmFeedConfig',
 
     'rest_framework',
     'rest_framework.authtoken',
