@@ -41,6 +41,7 @@ INSTALLED_APPS = [
 
     'coingecko_feed.apps.CoingeckoFeedConfig',
     'explorer_feed.apps.ExplorerFeedConfig',
+    'bitmart_feed.apps.BitmartFeedConfig',
     'vitex_feed.apps.VitexFeedConfig',
     'esm_feed.apps.EsmFeedConfig',
 

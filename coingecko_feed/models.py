@@ -13,7 +13,7 @@ class Coingecko(models.Model):
     timestamp = models.DateTimeField(auto_now=True)
     epic_vs_usd = models.DecimalField(decimal_places=8, max_digits=32)
     epic_vs_btc = models.DecimalField(decimal_places=8, max_digits=32)
-    epic_vs_other = models.JSONField(default=dict)
+    epic_vs_other = models.JSONField(default=dict, null=True)
 
     btc_vs_usd = models.DecimalField(decimal_places=8, max_digits=32)
 

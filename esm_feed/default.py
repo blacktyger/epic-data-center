@@ -1,11 +1,11 @@
+tor = {
+
+    }
 
 keybase = {
 
     }
 
-tor = {
-
-    }
 
 core_software = {
     'server': {
