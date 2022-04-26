@@ -7,3 +7,5 @@
 *.pyc
 *~
 *.swpgit rm *.pyc
+/bitmart_feed/migrations/
+*/migrations/
